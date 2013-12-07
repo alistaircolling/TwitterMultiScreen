@@ -13,6 +13,15 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import processing.core.PApplet;
+import twitter4j.FilterQuery;
+import twitter4j.StallWarning;
+import twitter4j.Status;
+import twitter4j.StatusDeletionNotice;
+import twitter4j.StatusListener;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
+import twitter4j.User;
+import twitter4j.conf.ConfigurationBuilder;
 
 import com.hookedup.led.LEDMatrix;
 import com.hookedup.processing.EQLevels;
@@ -99,32 +108,6 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		// the action is executed inside applet.actionPerformed()
 		buttonCreate.addActionListener(applet);
 
-		// this action is implemented NOT in the PApplet on purpose
-		// fileDialogues like to crash a PApplet
-		//
-		// if the JFileChooser returns a valid file
-		// loadBgImage() in MyApplet is executed
-//		buttonLoad.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent arg0) {
-//				JFileChooser chooser = new JFileChooser();
-//
-//				// example of an image fileFilter
-//				// no need to use, just switch it off
-//				chooser.setFileFilter(new MyImageFileFilter());
-//
-//				int returnVal = chooser.showOpenDialog(frame);
-//				if (returnVal == JFileChooser.APPROVE_OPTION) {
-//					System.out.println("You chose to open this file: "
-//							+ chooser.getSelectedFile().getName());
-//
-//					// sending the selectedFile to loadBgImage() in the PApplet
-//					applet.loadBgImage(chooser.getSelectedFile());
-//
-//				}
-//			}
-//
-//		});
-
 		// store the two buttons in the button panel
 		buttonPanel.add(buttonCreate);
 		buttonPanel.add(buttonLoad);
@@ -144,6 +127,79 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		// display the frame
 		frame.setVisible(true);
 
+		setupTwitter();
+	}
+
+	private void setupTwitter() {
+		
+		  ConfigurationBuilder cb = new ConfigurationBuilder();
+	        cb.setDebugEnabled(true);
+	        cb.setOAuthConsumerKey("hBMv81DL5k3kWAskc5H6jg");
+	        cb.setOAuthConsumerSecret("MnQiXLobTXTSejYeScJPhM8e4uJy1Bg8mzgnw30BMA");
+	        cb.setOAuthAccessToken("16739856-1gzgagMQ8QtPR0zwQkOYceNWYQpJZCKTFnKhyem1Z");
+	        cb.setOAuthAccessTokenSecret("PgXSKaGAsMQAtCBRj5V9S630HzF8U1AFuFvqcswOD6tX1");
+
+	        TwitterStream twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
+
+	        StatusListener listener = new StatusListener() {
+
+	            @Override
+	            public void onException(Exception arg0) {
+	                // TODO Auto-generated method stub
+
+	            }
+
+	            @Override
+	            public void onDeletionNotice(StatusDeletionNotice arg0) {
+	                // TODO Auto-generated method stub
+
+	            }
+
+	            @Override
+	            public void onScrubGeo(long arg0, long arg1) {
+	                // TODO Auto-generated method stub
+
+	            }
+
+	            @Override
+	            public void onStatus(Status status) {
+	                User user = status.getUser();
+	                
+	                // gets Username
+	                String username = status.getUser().getScreenName();
+	                System.out.println(username);
+	                String profileLocation = user.getLocation();
+	                System.out.println(profileLocation);
+	                long tweetId = status.getId(); 
+	                System.out.println(tweetId);
+	                String content = status.getText();
+	                System.out.println(content +"\n");
+
+	            }
+
+	            @Override
+	            public void onTrackLimitationNotice(int arg0) {
+	                // TODO Auto-generated method stub
+
+	            }
+
+				@Override
+				public void onStallWarning(StallWarning arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+	        };
+	        FilterQuery fq = new FilterQuery();
+	    
+	        String keywords[] = {"xfactor"};
+
+	        fq.track(keywords);
+
+	        twitterStream.addListener(listener);
+	        twitterStream.filter(fq);  
+
+		
 	}
 
 	void loadDefaultMatrix() {
