@@ -30,7 +30,7 @@ public class MyApplet extends PApplet implements ActionListener{
 
         @Override
         public void setup() {
-                size(400, 300);
+                size(1200, 500);
                 ballList = new ArrayList<Ball>();
                 //creates a first ball
                 createNewBall();
@@ -61,6 +61,7 @@ public class MyApplet extends PApplet implements ActionListener{
         * the String being compared is the ActionCommand from the button
         */
         public void actionPerformed(ActionEvent evt) {
+        	println("action performed");
                 if (evt.getActionCommand().equals("create ball")) {
                         createNewBall();
                 } else {

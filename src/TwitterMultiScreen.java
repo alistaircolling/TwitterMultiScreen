@@ -30,7 +30,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	Timer timer;
 
 	// ExtraWindow win;
-	//ExtraWindow win;
+	// ExtraWindow win;
 
 	// --- music fun
 	EQLevels eq;
@@ -64,111 +64,85 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	 * CONSTRUCTOR
 	 */
 	public TwitterMultiScreen() {
-		setupExtraWindow();
-		 //create a frame for the application
-        frame = new JFrame("PApplet in Java Application");
-        //make sure to shut down the application, when the frame is closed
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		final JFrame frame = new JFrame("PApplet in Java Application");
+		// make sure to shut down the application, when the frame is closed
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //create a panel for the applet and the button panel
-        JPanel panel = new JPanel();
+		// create a panel for the applet and the button panel
+		JPanel panel = new JPanel();
 
-        //create a panel for the buttons
-        JPanel buttonPanel = new JPanel();
-
-
-
-        //create an instance of your processing applet
-     //   final MyExtraWindow win  = new MyExtraWindow(proc, "EXTRA WINDOWz", 1200, 600);
-        
-      //create an instance of your processing applet
-        final MyApplet applet = new MyApplet();
-
-        //start the applet
-        applet.init();
-        
-        
-        contentPane = new JPanel();
-	//	contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-
-		JButton btnDemo = new JButton("Full Screen");
-		btnDemo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				launchFS();
-			}
-		});
-		btnDemo.setBounds(10, 11, 89, 23);
-		contentPane.add(btnDemo);
-        
-
-
-        //Buttons
-        //create a button labled "create new ball"
-        JButton buttonCreate = new JButton("create new ball");
-        //assing a tooltip
-        buttonCreate.setToolTipText("creates a new ball ");
-        //give a name for the command
-        //if this is not assigned the actionCommand equals the button label
-        buttonCreate.setActionCommand("create ball");
-
-        //create a button lable "load file"
-        JButton buttonLoad = new JButton("load file");
-        buttonLoad.setToolTipText("loads a new background image");
-
-
-        //button actions
-
-        //the create button is simply linked to the applet
-        //the action is executed inside applet.actionPerformed()
-    //    buttonCreate.addActionListener( (ActionListener) applet );
-
-
-        //this action is implemented NOT in the PApplet on purpose
-        //fileDialogues like to crash a PApplet
-        //
-        //if the JFileChooser returns a valid file
-        //loadBgImage() in MyApplet is executed
-//        buttonLoad.addActionListener(new ActionListener() {
-//                public void actionPerformed(ActionEvent arg0) {
-//                        JFileChooser chooser = new JFileChooser();
-//
-//                        //example of an image fileFilter
-//                        //no need to use, just switch it off
-//                  //      chooser.setFileFilter(new MyImageFileFilter());
-//
-//                        int returnVal = chooser.showOpenDialog(frame);
-//                        if(returnVal == JFileChooser.APPROVE_OPTION) {
-//                                System.out.println("You chose to open this file: " +
-//                                chooser.getSelectedFile().getName());
-//
-//                                //sending the selectedFile to loadBgImage() in the PApplet
-//                             
-//
-//                        }
-//                }
-//
-//        });
-//
-//        //store the two buttons in the button panel
-//        buttonPanel.add(buttonCreate);
-//        buttonPanel.add(buttonLoad);
-	//	win = new MyExtraWindow(proc, "EXTRA WINDOW", 1200, 600);
+		// create a panel for the buttons
+		JPanel buttonPanel = new JPanel();
 		
-        //store the applet in panel
-      //  panel.add(win);
-        //store the buttonPanel in panel
-        panel.add(buttonPanel);
+		// create an instance of your processing applet
+		final MyApplet applet = new MyApplet();
 
-        //store the panel in the frame
-        frame.add(panel);
-        //assign a size for the frame
-        //reading the size from the applet
-        frame.setSize(1200,600);
+		// start the applet
+		applet.init();
 
-        //display the frame
-        frame.setVisible(true);
+		// Buttons
+		// create a button labled "create new ball"
+		JButton buttonCreate = new JButton("create new ball");
+		// assing a tooltip
+		buttonCreate.setToolTipText("creates a new ball ");
+		// give a name for the command
+		// if this is not assigned the actionCommand equals the button label
+		buttonCreate.setActionCommand("create ball");
+
+		// create a button lable "load file"
+		JButton buttonLoad = new JButton("load file");
+		buttonLoad.setToolTipText("loads a new background image");
+
+		// button actions
+
+		// the create button is simply linked to the applet
+		// the action is executed inside applet.actionPerformed()
+		buttonCreate.addActionListener(applet);
+
+		// this action is implemented NOT in the PApplet on purpose
+		// fileDialogues like to crash a PApplet
+		//
+		// if the JFileChooser returns a valid file
+		// loadBgImage() in MyApplet is executed
+//		buttonLoad.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				JFileChooser chooser = new JFileChooser();
+//
+//				// example of an image fileFilter
+//				// no need to use, just switch it off
+//				chooser.setFileFilter(new MyImageFileFilter());
+//
+//				int returnVal = chooser.showOpenDialog(frame);
+//				if (returnVal == JFileChooser.APPROVE_OPTION) {
+//					System.out.println("You chose to open this file: "
+//							+ chooser.getSelectedFile().getName());
+//
+//					// sending the selectedFile to loadBgImage() in the PApplet
+//					applet.loadBgImage(chooser.getSelectedFile());
+//
+//				}
+//			}
+//
+//		});
+
+		// store the two buttons in the button panel
+		buttonPanel.add(buttonCreate);
+		buttonPanel.add(buttonLoad);
+
+		// store the applet in panel
+		panel.add(applet);
+		// store the buttonPanel in panel
+		panel.add(buttonPanel);
+		
+
+		// store the panel in the frame
+		frame.add(panel);
+		// assign a size for the frame
+		// reading the size from the applet
+		frame.setSize(1200, 800);
+
+		// display the frame
+		frame.setVisible(true);
 
 	}
 
@@ -204,7 +178,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	}
 
 	void setupExtraWindow() {
-		
+
 		// win = new DropsWindow(proc, "Matrix Setup", 500, 300);
 		// win.setVisible(false);
 
@@ -221,7 +195,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	private void launchFS() {
 
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-		
+
 		// TODO Auto-generated method stub
 		System.out.println("launch fs");
 	}
