@@ -1,16 +1,16 @@
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import processing.core.PApplet;
 
@@ -22,11 +22,6 @@ import com.hookedup.processing.ProcessingAppLauncherMinim;
 import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JTextField;
-
 public class TwitterMultiScreen extends BaseSwingFrameApp {
 	Minim minim;
 	AudioPlayer song;
@@ -35,7 +30,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	Timer timer;
 
 	// ExtraWindow win;
-	ExtraWindow win;
+	//ExtraWindow win;
 
 	// --- music fun
 	EQLevels eq;
@@ -63,78 +58,117 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	int MATRIX_COLS = 40;
 	int MATRIX_ROWS = 25;
 	LEDMatrix matrix;
+	private JFrame frame;
 
 	/**
 	 * CONSTRUCTOR
 	 */
 	public TwitterMultiScreen() {
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				loadFromCanvasTask = null;
+		setupExtraWindow();
+		 //create a frame for the application
+        frame = new JFrame("PApplet in Java Application");
+        //make sure to shut down the application, when the frame is closed
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-				matrix.end();
-				timer.cancel();
-				timer.purge();
+        //create a panel for the applet and the button panel
+        JPanel panel = new JPanel();
 
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
-				}
+        //create a panel for the buttons
+        JPanel buttonPanel = new JPanel();
 
-				System.exit(0);
-			}
-		});
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+
+        //create an instance of your processing applet
+     //   final MyExtraWindow win  = new MyExtraWindow(proc, "EXTRA WINDOWz", 1200, 600);
+        
+      //create an instance of your processing applet
+        final MyApplet applet = new MyApplet();
+
+        //start the applet
+        applet.init();
+        
+        
+        contentPane = new JPanel();
+	//	contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JButton btnDemo = new JButton("Fullscreen");
+		JButton btnDemo = new JButton("Full Screen");
 		btnDemo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				launchFS();
 			}
-
 		});
 		btnDemo.setBounds(10, 11, 89, 23);
 		contentPane.add(btnDemo);
+        
 
-		JButton btnPlayDemoSong = new JButton("Play Demo Song");
-		btnPlayDemoSong.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				playDemoSong();
-			}
-		});
-		btnPlayDemoSong.setBounds(133, 11, 195, 23);
-		contentPane.add(btnPlayDemoSong);
 
-		JButton btnStop = new JButton("Stop");
-		btnStop.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (eq.song == null)
-					return;
+        //Buttons
+        //create a button labled "create new ball"
+        JButton buttonCreate = new JButton("create new ball");
+        //assing a tooltip
+        buttonCreate.setToolTipText("creates a new ball ");
+        //give a name for the command
+        //if this is not assigned the actionCommand equals the button label
+        buttonCreate.setActionCommand("create ball");
 
-				if (eq.song.isPlaying())
-					eq.song.close();
-			}
-		});
-		btnStop.setBounds(10, 45, 89, 23);
-		contentPane.add(btnStop);
+        //create a button lable "load file"
+        JButton buttonLoad = new JButton("load file");
+        buttonLoad.setToolTipText("loads a new background image");
 
-		txtSongName = new JTextField();
-		txtSongName.setText("/letithappen.mp3");
-		txtSongName.setBounds(133, 33, 195, 20);
-		contentPane.add(txtSongName);
-		txtSongName.setColumns(10);
 
-		setupExtraWindow();
+        //button actions
 
-		// moved -- matrixSetup();
+        //the create button is simply linked to the applet
+        //the action is executed inside applet.actionPerformed()
+    //    buttonCreate.addActionListener( (ActionListener) applet );
+
+
+        //this action is implemented NOT in the PApplet on purpose
+        //fileDialogues like to crash a PApplet
+        //
+        //if the JFileChooser returns a valid file
+        //loadBgImage() in MyApplet is executed
+//        buttonLoad.addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent arg0) {
+//                        JFileChooser chooser = new JFileChooser();
+//
+//                        //example of an image fileFilter
+//                        //no need to use, just switch it off
+//                  //      chooser.setFileFilter(new MyImageFileFilter());
+//
+//                        int returnVal = chooser.showOpenDialog(frame);
+//                        if(returnVal == JFileChooser.APPROVE_OPTION) {
+//                                System.out.println("You chose to open this file: " +
+//                                chooser.getSelectedFile().getName());
+//
+//                                //sending the selectedFile to loadBgImage() in the PApplet
+//                             
+//
+//                        }
+//                }
+//
+//        });
+//
+//        //store the two buttons in the button panel
+//        buttonPanel.add(buttonCreate);
+//        buttonPanel.add(buttonLoad);
+	//	win = new MyExtraWindow(proc, "EXTRA WINDOW", 1200, 600);
+		
+        //store the applet in panel
+      //  panel.add(win);
+        //store the buttonPanel in panel
+        panel.add(buttonPanel);
+
+        //store the panel in the frame
+        frame.add(panel);
+        //assign a size for the frame
+        //reading the size from the applet
+        frame.setSize(1200,600);
+
+        //display the frame
+        frame.setVisible(true);
 
 	}
 
@@ -170,7 +204,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	}
 
 	void setupExtraWindow() {
-		win = new MyExtraWindow(proc, "EXTRA WINDOW", 600, 600);
+		
 		// win = new DropsWindow(proc, "Matrix Setup", 500, 300);
 		// win.setVisible(false);
 
@@ -186,8 +220,8 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 	private void launchFS() {
 
-		 this.setExtendedState(Frame.MAXIMIZED_BOTH);
-
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		
 		// TODO Auto-generated method stub
 		System.out.println("launch fs");
 	}
