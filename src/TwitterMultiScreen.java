@@ -1,5 +1,7 @@
 import java.awt.EventQueue;
 import java.awt.Frame;
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,6 +25,7 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.User;
 import twitter4j.conf.ConfigurationBuilder;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.hookedup.led.LEDMatrix;
 import com.hookedup.processing.EQLevels;
 import com.hookedup.processing.ProcessingAppLauncherMinim;
@@ -67,8 +70,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	int MATRIX_ROWS = 25;
 	LEDMatrix matrix;
 	private JFrame frame;
-	final HashMap<String, Integer> map = new HashMap<String, Integer>();
-	
+
 	/**
 	 * CONSTRUCTOR
 	 */
@@ -82,7 +84,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 		// create a panel for the buttons
 		JPanel buttonPanel = new JPanel();
-		
+
 		// create an instance of your processing applet
 		final MyApplet applet = new MyApplet();
 
@@ -116,7 +118,6 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		panel.add(applet);
 		// store the buttonPanel in panel
 		panel.add(buttonPanel);
-		
 
 		// store the panel in the frame
 		frame.add(panel);
@@ -126,134 +127,138 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 		// display the frame
 		frame.setVisible(true);
-	//	createDataStore();
+		createDataStore();
 		setupTwitter();
 	}
 
-//	private void createDataStore() {
-//		map = new HashMap<String, Integer>();
-//		
-//		
-//		
-//	}
-
 	private void setupTwitter() {
-		
-		  ConfigurationBuilder cb = new ConfigurationBuilder();
-	        cb.setDebugEnabled(true);
-	        cb.setOAuthConsumerKey("hBMv81DL5k3kWAskc5H6jg");
-	        cb.setOAuthConsumerSecret("MnQiXLobTXTSejYeScJPhM8e4uJy1Bg8mzgnw30BMA");
-	        cb.setOAuthAccessToken("16739856-1gzgagMQ8QtPR0zwQkOYceNWYQpJZCKTFnKhyem1Z");
-	        cb.setOAuthAccessTokenSecret("PgXSKaGAsMQAtCBRj5V9S630HzF8U1AFuFvqcswOD6tX1");
 
-	        TwitterStream twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setDebugEnabled(true);
+		cb.setOAuthConsumerKey("hBMv81DL5k3kWAskc5H6jg");
+		cb.setOAuthConsumerSecret("MnQiXLobTXTSejYeScJPhM8e4uJy1Bg8mzgnw30BMA");
+		cb.setOAuthAccessToken("16739856-1gzgagMQ8QtPR0zwQkOYceNWYQpJZCKTFnKhyem1Z");
+		cb.setOAuthAccessTokenSecret("PgXSKaGAsMQAtCBRj5V9S630HzF8U1AFuFvqcswOD6tX1");
 
-	        StatusListener listener = new StatusListener() {
+		TwitterStream twitterStream = new TwitterStreamFactory(cb.build())
+				.getInstance();
 
-	            @Override
-	            public void onException(Exception arg0) {
-	                // TODO Auto-generated method stub
+		StatusListener listener = new StatusListener() {
 
-	            }
+			@Override
+			public void onException(Exception arg0) {
+				// TODO Auto-generated method stub
 
-	            @Override
-	            public void onDeletionNotice(StatusDeletionNotice arg0) {
-	                // TODO Auto-generated method stub
+			}
 
-	            }
+			@Override
+			public void onDeletionNotice(StatusDeletionNotice arg0) {
+				// TODO Auto-generated method stub
 
-	            @Override
-	            public void onScrubGeo(long arg0, long arg1) {
-	                // TODO Auto-generated method stub
+			}
 
-	            }
+			@Override
+			public void onScrubGeo(long arg0, long arg1) {
+				// TODO Auto-generated method stub
 
-	            @Override
-	            public void onStatus(Status status) {
-	                User user = status.getUser();
-	                
-	                // gets Username
-	                String username = status.getUser().getScreenName();
-	                System.out.println(username);
-	                String profileLocation = user.getLocation();
-	                System.out.println(profileLocation);
-	                long tweetId = status.getId(); 
-	                System.out.println(tweetId);
-	                String content = status.getText();
-	                System.out.println(content +"\n");
-	                addKeywords(status);
-	                
-	            }
+			}
 
-	          
-				@Override
-	            public void onTrackLimitationNotice(int arg0) {
-	                // TODO Auto-generated method stub
+			@Override
+			public void onStatus(Status status) {
+				User user = status.getUser();
 
-	            }
+				// gets Username
+				String username = status.getUser().getScreenName();
+				System.out.println(username);
+				String profileLocation = user.getLocation();
+				System.out.println(profileLocation);
+				long tweetId = status.getId();
+				System.out.println(tweetId);
+				String content = status.getText();
+				System.out.println(content + "\n");
+				addKeywords(status);
+				traceTotals();
 
-				@Override
-				public void onStallWarning(StallWarning arg0) {
-					// TODO Auto-generated method stub
-					
-				}
+			}
 
-	        };
-	        FilterQuery fq = new FilterQuery();
-	    
-	        String keywords[] = {"xfactor"};
+			@Override
+			public void onTrackLimitationNotice(int arg0) {
+				// TODO Auto-generated method stub
 
-	        fq.track(keywords);
+			}
 
-	        twitterStream.addListener(listener);
-	        twitterStream.filter(fq);  
+			@Override
+			public void onStallWarning(StallWarning arg0) {
+				// TODO Auto-generated method stub
 
-		
+			}
+
+		};
+		FilterQuery fq = new FilterQuery();
+
+		String keywords[] = { "xfactor" };
+
+		fq.track(keywords);
+
+		twitterStream.addListener(listener);
+		twitterStream.filter(fq);
+
 	}
 
-	
+	private HashMap<String, Integer> map;
+
+	ArrayList<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>();
+
+	private ArrayListMultimap<String, Integer> gMap = ArrayListMultimap
+			.create();
+
+	private void createDataStore() {
+		map = new HashMap<String, Integer>();
+
+	}
 
 	protected void addKeywords(Status status) {
+		// get tweet
 		String str = status.getText();
-		String[] splited = str.split("\\s+");
+		// split into an array remove punctuation and make lower case
+		String[] splited = str.replaceAll("[^a-zA-Z ]", "").toLowerCase()
+				.split("\\s+");
+		// vars used in loop
 		String thisStr;
-		int wordTot;
-		thisStr = "tester";
-		traceTotals();
-		
+
+		java.util.List<Integer> wordTot;
+		int thisTot;
+		Entry<String, Integer> newEntry = null;
+
 		for (int i = 0; i < splited.length; i++) {
-			thisStr = splited[i];
-			thisStr = "tester";
-			//check of exists in map
-			
-			
-			
-			if (map.get(thisStr) == null){
-				//already exists
-				System.out.println("should be once");
-				map.put(thisStr, 1);
-			}else{
-				
-				//its a new word!
-				wordTot = map.get(thisStr);
-				wordTot ++;
-				map.put(thisStr, wordTot);
+			// get word from array
+			thisStr = splited[i].toLowerCase();
+		//	thisStr = "hi";
+ 
+			// if the string has not been added yet
+			if (!gMap.containsKey(thisStr)) {
+				gMap.put(thisStr, 1);
+			} else {
+				// already added so increment
+				wordTot = gMap.get(thisStr);
+				thisTot = wordTot.get(0);
+				thisTot++;
+				gMap.put(thisStr, thisTot);
 			}
-			
+
 		}
-		
+
 	}
 
 	private void traceTotals() {
-		System.out.println("tracet");
-			
-		 Iterator<Entry<String, Integer>> it = map.entrySet().iterator();
-		    while (it.hasNext()) {
-		        Map.Entry pairs = (Map.Entry)it.next();
-		        System.out.println(pairs.getKey() + " = " + pairs.getValue());
-		        it.remove(); // avoids a ConcurrentModificationException
-		    }
-		
+		System.out.println("trace totals");
+
+		// Iterating over entire Mutlimap
+		  for(String value : gMap.keys()) {
+		  java.util.List<Integer> tot = gMap.get(value);
+		   System.out.println(value+":"+tot.get(0));
+		  }
+
 	}
 
 	void loadDefaultMatrix() {
