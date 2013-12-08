@@ -1,16 +1,16 @@
 import java.awt.EventQueue;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 
 import processing.core.PApplet;
 import twitter4j.FilterQuery;
@@ -25,7 +25,6 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import com.hookedup.led.LEDMatrix;
 import com.hookedup.processing.EQLevels;
-import com.hookedup.processing.ExtraWindow;
 import com.hookedup.processing.ProcessingAppLauncherMinim;
 
 import ddf.minim.AudioPlayer;
@@ -68,7 +67,8 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	int MATRIX_ROWS = 25;
 	LEDMatrix matrix;
 	private JFrame frame;
-
+	final HashMap<String, Integer> map = new HashMap<String, Integer>();
+	
 	/**
 	 * CONSTRUCTOR
 	 */
@@ -126,9 +126,16 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 		// display the frame
 		frame.setVisible(true);
-
+	//	createDataStore();
 		setupTwitter();
 	}
+
+//	private void createDataStore() {
+//		map = new HashMap<String, Integer>();
+//		
+//		
+//		
+//	}
 
 	private void setupTwitter() {
 		
@@ -174,10 +181,12 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	                System.out.println(tweetId);
 	                String content = status.getText();
 	                System.out.println(content +"\n");
-
+	                addKeywords(status);
+	                
 	            }
 
-	            @Override
+	          
+				@Override
 	            public void onTrackLimitationNotice(int arg0) {
 	                // TODO Auto-generated method stub
 
@@ -199,6 +208,51 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	        twitterStream.addListener(listener);
 	        twitterStream.filter(fq);  
 
+		
+	}
+
+	
+
+	protected void addKeywords(Status status) {
+		String str = status.getText();
+		String[] splited = str.split("\\s+");
+		String thisStr;
+		int wordTot;
+		thisStr = "tester";
+		traceTotals();
+		
+		for (int i = 0; i < splited.length; i++) {
+			thisStr = splited[i];
+			thisStr = "tester";
+			//check of exists in map
+			
+			
+			
+			if (map.get(thisStr) == null){
+				//already exists
+				System.out.println("should be once");
+				map.put(thisStr, 1);
+			}else{
+				
+				//its a new word!
+				wordTot = map.get(thisStr);
+				wordTot ++;
+				map.put(thisStr, wordTot);
+			}
+			
+		}
+		
+	}
+
+	private void traceTotals() {
+		System.out.println("tracet");
+			
+		 Iterator<Entry<String, Integer>> it = map.entrySet().iterator();
+		    while (it.hasNext()) {
+		        Map.Entry pairs = (Map.Entry)it.next();
+		        System.out.println(pairs.getKey() + " = " + pairs.getValue());
+		        it.remove(); // avoids a ConcurrentModificationException
+		    }
 		
 	}
 
