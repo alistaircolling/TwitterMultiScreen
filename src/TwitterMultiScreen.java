@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -322,19 +323,27 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 	};
 
+	private ArrayList<Snapshot> snapShots;
+
 	// executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
 
 	void setupTimer() {
 		// loadFromCanvasTask = new LoadFromCanvasTask();
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new SnapShotTask(), 10000, 5000);
+		snapShots = new ArrayList<Snapshot>();
 	}
 
 	public void snapshotData() {
-		System.out.println("snapshot!");
+		
 		Calendar cal = Calendar.getInstance();
-		cal.getTime();
-		snapShot = new Snapshot(cal, mapList);
+		Date time = cal.getTime();
+		Snapshot snapShot = new Snapshot(time, mapList, snapShots.size()-1);
+		snapShots.add(snapShot);
+		System.out.println("snapshot! total now:"+snapShots.size());
+		applet.setNewSnapShotList(snapShots);
+		
+		
 	}
 
 	class SnapShotTask extends TimerTask {
