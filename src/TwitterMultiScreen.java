@@ -149,7 +149,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 			@Override
 			public void onStatus(Status status) {
 				User user = status.getUser();
-				System.out.println("status");
+			//	System.out.println("status");
 				// gets Username
 				String username = status.getUser().getScreenName();
 
@@ -352,13 +352,13 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		snapShots.add(snapShot);
 
 		// get the highest val in the array
-		int newMaxVal = snapShot.getArray().get(targInd-1)
+		int newMaxVal = snapShot.getArray().get(0)
 				.getValue();
 		if (newMaxVal > maxVal)
 			maxVal = newMaxVal;
 
 		System.out.println("snapshot! total now:" + snapShots.size());
-		applet.setNewSnapShotList(snapShots);
+		applet.setNewSnapShotList(snapShots, maxVal);
 
 	}
 

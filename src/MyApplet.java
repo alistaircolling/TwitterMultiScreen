@@ -38,6 +38,7 @@ public class MyApplet extends PApplet implements ActionListener {
 	private String lastTweet = "";
 	private ArrayList<Snapshot> snapShots;
 	private ArrayList<Entry<String, Integer>> mapList;
+	private int maxVal;
 
 	@Override
 	public void setup() {
@@ -97,7 +98,7 @@ public class MyApplet extends PApplet implements ActionListener {
 			text(entry.getKey() + ":" + entry.getValue(), xPos, yPos
 					+ (fontSize * .5f));
 			// already exists
-			 System.out.println(entry.getKey() + ":" + entry.getValue());
+			 //System.out.println(entry.getKey() + ":" + entry.getValue());
 			
 			yPos += fontSize;
 			if (yPos > height) {
@@ -141,8 +142,9 @@ public class MyApplet extends PApplet implements ActionListener {
 
 	}
 	
-	public void setNewSnapShotList(ArrayList<Snapshot> theSnapShots) {
+	public void setNewSnapShotList(ArrayList<Snapshot> theSnapShots, int theMaxVal) {
 		snapShots = theSnapShots;
+		maxVal = theMaxVal;
 	}
 
 	public void drawGraph(){
@@ -150,19 +152,32 @@ public class MyApplet extends PApplet implements ActionListener {
 		pushMatrix();
 			translate(200, 250);
 			fill(200, 0, 100);
-			rect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
-			popMatrix();
-			/*
+		//	rect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
+			
+			
 			//draw axis
 			stroke(255);
 			line(0, 0, 0, GRAPH_HEIGHT);
 			line(0, GRAPH_HEIGHT, GRAPH_WIDTH, GRAPH_HEIGHT);
-			// draw dots - make sure we only get the last XX snapshots 
-			int top = snapShots.size()-1;
+			int top = 0;
+			if (snapShots!=null){
+				if (snapShots.size()>0){
+					top = snapShots.size()-1;
+				}
+			}
+			
+//			// draw dots - make sure we only get the last XX snapshots 
+		//	int top = snapShots.size()-1;  //get the highest value
+			//if (top<0) return;
 			int bottom = 0;
 			float xPos = 0;
 			float yPos = 0;
 			int maxVal = 0;
+//			
+			
+			popMatrix();
+			/*
+
 			float incPerSnapShot = GRAPH_WIDTH/MAX_SNAPSHOTS_TO_SHOW;*/
 		//	Snapshot snap;
 //			if (top>MAX_SNAPSHOTS_TO_SHOW) bottom = top - MAX_SNAPSHOTS_TO_SHOW; 
