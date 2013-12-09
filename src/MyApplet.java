@@ -28,6 +28,9 @@ public class MyApplet extends PApplet implements ActionListener {
 
 	// list of all balls
 	
+	private static final float GRAPH_WIDTH = 700;
+	private static final float GRAPH_HEIGHT = 400;
+	private static final int MAX_SNAPSHOTS_TO_SHOW = 100;
 	// the background image
 	PImage bgImg = null;
 	private PFont fontA;
@@ -76,7 +79,7 @@ public class MyApplet extends PApplet implements ActionListener {
 		int xPos = 10;
 		int fontSize = 0;
 		background(0);
-		drawGraph();
+	//	drawGraph();
 		addTitle();
 		//
 
@@ -94,7 +97,7 @@ public class MyApplet extends PApplet implements ActionListener {
 			text(entry.getKey() + ":" + entry.getValue(), xPos, yPos
 					+ (fontSize * .5f));
 			// already exists
-			// System.out.println(entry.getKey() + ":" + entry.getValue());
+			 System.out.println(entry.getKey() + ":" + entry.getValue());
 			
 			yPos += fontSize;
 			if (yPos > height) {
@@ -145,9 +148,41 @@ public class MyApplet extends PApplet implements ActionListener {
 	public void drawGraph(){
 		//move in from the side etc
 		pushMatrix();
-			translate(200, 200);
-			fill(200, 100, 100);
-			rect(0, 0, 100, 100);
+			translate(200, 250);
+		//	fill(200, 0, 100);
+		//	rect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
+			//draw axis
+			stroke(255);
+			line(0, 0, 0, GRAPH_HEIGHT);
+			line(0, GRAPH_HEIGHT, GRAPH_WIDTH, GRAPH_HEIGHT);
+			// draw dots - make sure we only get the last XX snapshots 
+			int top = snapShots.size()-1;
+			int bottom = 0;
+			float xPos = 0;
+			float yPos = 0;
+			int maxVal = 0;
+			float incPerSnapShot = GRAPH_WIDTH/MAX_SNAPSHOTS_TO_SHOW;
+			Snapshot snap;
+			if (top>MAX_SNAPSHOTS_TO_SHOW) bottom = top - MAX_SNAPSHOTS_TO_SHOW; 
+			for (int i = bottom; i < top; i++) {
+				
+				snap = snapShots.get(i);
+				
+				if (maxVal==0){
+					//get the val of the last item in the array
+					maxVal = snap.getArray().get(snap.getArray().size()-1).getValue();
+				}
+				
+				xPos = i*incPerSnapShot;
+				//move to the correct xpos
+				pushMatrix();
+					translate(xPos, 0);
+					//go through each of the top XXX words
+					
+				popMatrix();
+			}
+			
+			//
 		popMatrix();
 		
 	

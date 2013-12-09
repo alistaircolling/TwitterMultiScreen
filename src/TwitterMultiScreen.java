@@ -47,7 +47,10 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 	private JFrame frame;
 	private MyApplet applet;
+	//used to track total values
 	ArrayList<Map.Entry<String, Integer>> mapList;
+	//used to track values comparatively over time i.e. the rate
+	private ArrayList<Entry<String, Integer>> snapShotList;
 
 	/**
 	 * CONSTRUCTOR
@@ -146,7 +149,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 			@Override
 			public void onStatus(Status status) {
 				User user = status.getUser();
-
+				System.out.println("status");
 				// gets Username
 				String username = status.getUser().getScreenName();
 
@@ -196,6 +199,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	private void createDataStore() {
 
 		mapList = new ArrayList<Map.Entry<String, Integer>>();
+		snapShotList = new ArrayList<Map.Entry<String, Integer>>();
 		
 
 	}
@@ -224,6 +228,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 				// this is the syntax that I don't know!
 				mapList.add(new AbstractMap.SimpleEntry<String, Integer>(
 						thisStr, 1));
+				
 			} else {
 				// iterate through mapList
 
@@ -325,12 +330,15 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 	private ArrayList<Snapshot> snapShots;
 
+	//used to track the highest val we've seen so far
+	private Integer maxVal = 0;
+
 	// executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
 
 	void setupTimer() {
 		// loadFromCanvasTask = new LoadFromCanvasTask();
 		timer = new Timer();
-		timer.scheduleAtFixedRate(new SnapShotTask(), 10000, 5000);
+		//timer.scheduleAtFixedRate(new SnapShotTask(), 2000, 1000);
 		snapShots = new ArrayList<Snapshot>();
 	}
 
@@ -338,7 +346,11 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		
 		Calendar cal = Calendar.getInstance();
 		Date time = cal.getTime();
+		
 		Snapshot snapShot = new Snapshot(time, mapList, snapShots.size()-1);
+		//get the highest val in the array
+		int newMaxVal = snapShot.getArray().get(snapShot.getArray().size()-1).getValue();
+		if (newMaxVal>maxVal) maxVal = newMaxVal;
 		snapShots.add(snapShot);
 		System.out.println("snapshot! total now:"+snapShots.size());
 		applet.setNewSnapShotList(snapShots);
