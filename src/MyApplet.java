@@ -79,7 +79,7 @@ public class MyApplet extends PApplet implements ActionListener {
 		int xPos = 10;
 		int fontSize = 0;
 		background(0);
-	//	drawGraph();
+		drawGraph();
 		addTitle();
 		//
 
@@ -149,8 +149,10 @@ public class MyApplet extends PApplet implements ActionListener {
 		//move in from the side etc
 		pushMatrix();
 			translate(200, 250);
-		//	fill(200, 0, 100);
-		//	rect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
+			fill(200, 0, 100);
+			rect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
+			popMatrix();
+			/*
 			//draw axis
 			stroke(255);
 			line(0, 0, 0, GRAPH_HEIGHT);
@@ -161,29 +163,25 @@ public class MyApplet extends PApplet implements ActionListener {
 			float xPos = 0;
 			float yPos = 0;
 			int maxVal = 0;
-			float incPerSnapShot = GRAPH_WIDTH/MAX_SNAPSHOTS_TO_SHOW;
-			Snapshot snap;
-			if (top>MAX_SNAPSHOTS_TO_SHOW) bottom = top - MAX_SNAPSHOTS_TO_SHOW; 
-			for (int i = bottom; i < top; i++) {
-				
-				snap = snapShots.get(i);
-				
-				if (maxVal==0){
-					//get the val of the last item in the array
-					maxVal = snap.getArray().get(snap.getArray().size()-1).getValue();
-				}
-				
-				xPos = i*incPerSnapShot;
-				//move to the correct xpos
-				pushMatrix();
-					translate(xPos, 0);
-					//go through each of the top XXX words
-					
-				popMatrix();
-			}
-			
+			float incPerSnapShot = GRAPH_WIDTH/MAX_SNAPSHOTS_TO_SHOW;*/
+		//	Snapshot snap;
+//			if (top>MAX_SNAPSHOTS_TO_SHOW) bottom = top - MAX_SNAPSHOTS_TO_SHOW; 
+//			for (int i = bottom; i < top; i++) {
+//				
+//				snap = snapShots.get(i);
+//				
+//				if (maxVal==0){
+//					//get the val of the last item in the array
+//					maxVal = snap.getArray().get(snap.getArray().size()-1).getValue();
+//				}
+//				
+//				xPos = i*incPerSnapShot;
+//				//move to the correct xpos
+//				
+//			}
+//			
 			//
-		popMatrix();
+	//	popMatrix();
 		
 	
 		

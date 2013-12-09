@@ -47,9 +47,9 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 	private JFrame frame;
 	private MyApplet applet;
-	//used to track total values
+	// used to track total values
 	ArrayList<Map.Entry<String, Integer>> mapList;
-	//used to track values comparatively over time i.e. the rate
+	// used to track values comparatively over time i.e. the rate
 	private ArrayList<Entry<String, Integer>> snapShotList;
 
 	/**
@@ -200,7 +200,6 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 		mapList = new ArrayList<Map.Entry<String, Integer>>();
 		snapShotList = new ArrayList<Map.Entry<String, Integer>>();
-		
 
 	}
 
@@ -228,7 +227,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 				// this is the syntax that I don't know!
 				mapList.add(new AbstractMap.SimpleEntry<String, Integer>(
 						thisStr, 1));
-				
+
 			} else {
 				// iterate through mapList
 
@@ -330,7 +329,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 	private ArrayList<Snapshot> snapShots;
 
-	//used to track the highest val we've seen so far
+	// used to track the highest val we've seen so far
 	private Integer maxVal = 0;
 
 	// executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
@@ -338,24 +337,29 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	void setupTimer() {
 		// loadFromCanvasTask = new LoadFromCanvasTask();
 		timer = new Timer();
-		//timer.scheduleAtFixedRate(new SnapShotTask(), 2000, 1000);
 		snapShots = new ArrayList<Snapshot>();
+		timer.scheduleAtFixedRate(new SnapShotTask(), 2000, 1000);
+		
 	}
 
 	public void snapshotData() {
-		
+
 		Calendar cal = Calendar.getInstance();
 		Date time = cal.getTime();
-		
-		Snapshot snapShot = new Snapshot(time, mapList, snapShots.size()-1);
-		//get the highest val in the array
-		int newMaxVal = snapShot.getArray().get(snapShot.getArray().size()-1).getValue();
-		if (newMaxVal>maxVal) maxVal = newMaxVal;
+		int targInd = snapShots.size()-1;
+		if (targInd==-1) targInd = 0;
+		Snapshot snapShot = new Snapshot(time, mapList, targInd);
 		snapShots.add(snapShot);
-		System.out.println("snapshot! total now:"+snapShots.size());
+
+		// get the highest val in the array
+		int newMaxVal = snapShot.getArray().get(targInd-1)
+				.getValue();
+		if (newMaxVal > maxVal)
+			maxVal = newMaxVal;
+
+		System.out.println("snapshot! total now:" + snapShots.size());
 		applet.setNewSnapShotList(snapShots);
-		
-		
+
 	}
 
 	class SnapShotTask extends TimerTask {
