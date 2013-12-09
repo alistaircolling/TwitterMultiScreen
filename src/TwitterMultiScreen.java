@@ -1,6 +1,7 @@
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.List;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -196,7 +197,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		};
 		FilterQuery fq = new FilterQuery();
 
-		String keywords[] = { "xfactor" };
+		String keywords[] = { "cat" };
 
 		fq.track(keywords);
 
@@ -216,65 +217,68 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		map = new HashMap<String, Integer>();
 
 	}
-	
-	ArrayList<Map.Entry<String, String>> mapList = new ArrayList<Map.Entry<String, String>>();
+
+	ArrayList<Map.Entry<String, Integer>> mapList = new ArrayList<Map.Entry<String, Integer>>();
 
 	protected void addKeywords(Status status) {
-	    // get tweet
-	    String str = status.getText();
-	    // split into an array remove punctuation and make lower case
-	    String[] splited = str.replaceAll("[^a-zA-Z ]", "").toLowerCase()
-	            .split("\\s+");
-	    // vars used in loop
-	    String thisStr;
-	    int wordTot;
-	    Entry<String, Integer> newEntry = null;
+		// get tweet
+		String str = status.getText();
+	//	str = "one, two three";
+		// split into an array remove punctuation and make lower case
+		String[] splited = str.replaceAll("[^a-zA-Z ]", "").toLowerCase()
+				.split("\\s+");
+		// vars used in loop
+		String thisStr;
+		int wordTot;
+		Entry<String, Integer> newEntry = null;
+		boolean isInList = false;
+		for (int i = 0; i < splited.length; i++) {
+			// get word from array
+			thisStr = splited[i].toLowerCase();
+		//	thisStr = "hi";
+			// if this is the first word to be added
+			if (mapList.size() == 0) {
+				// this is the syntax that I don't know!
+				mapList.add(new AbstractMap.SimpleEntry<String, Integer>(
+						thisStr, 1));
+			} else {
+				// iterate through mapList
 
-	    for (int i = 0; i < splited.length; i++) {
-	        // get word from array
-	        thisStr = splited[i].toLowerCase();
-	        thisStr = "hi";
+				for (Entry<String, Integer> entry : mapList) {
+					// already exists
+					if (entry.getKey().equals(thisStr)) {
+						wordTot = entry.getValue();
+						// increment the value
+						wordTot++;
+						entry.setValue(wordTot);
+						mapList.remove(entry);
+						mapList.add(new AbstractMap.SimpleEntry<String, Integer>(
+								thisStr, wordTot));
+						isInList = true;
+						break;
+					}
 
-	        // if this is the first word to be added
-	        if (mapList.size() == 0) {
-	            //this is the syntax that I don't know!
-	            newEntry.key = theStr;
-	            newEntry.value = 1;
-	            mapList.add(newEntry);
-	        } else {
-	            boolean alreadyExists = false;
-	            //iterate through mapList
-	            for (Entry<String, Integer> entry : mapList) {
-	                // already exists
-	                if (entry.getKey() == thisStr) {
-	                    wordTot = entry.getValue();
-	                    //increment the value
-	                    wordTot++;
-	                    entry.setValue(wordTot);
-	                    break; 
-	                } 
+				}
+				if (!isInList) {
+					// if we have reached here the value must not be in the
+					// arraylist so add it
+					mapList.add(new AbstractMap.SimpleEntry<String, Integer>(
+							thisStr, 1));
+				}
+			}
 
-	            }
-	            //if we have reached here the value must not be in the arraylist so add it
-
-	            //again - this is the syntax that I don't know!
-	            newEntry.key = theStr;
-	            newEntry.value = 1;
-	            mapList.add(newEntry);
-	        }
-
-	    }
+		}
 
 	}
 
 	private void traceTotals() {
-		System.out.println("trace totals");
+		System.out.println(" ======== trace totals =========");
 
-		// Iterating over entire Mutlimap
-		  for(String value : gMap.keys()) {
-		  java.util.List<Integer> tot = gMap.get(value);
-		   System.out.println(value+":"+tot.get(0));
-		  }
+		for (Entry<String, Integer> entry : mapList) {
+			// already exists
+			System.out.println(entry.getKey() + ":" + entry.getValue());
+
+		}
 
 	}
 
