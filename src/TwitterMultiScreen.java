@@ -344,7 +344,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		timer = new Timer();
 		snapShots = new ArrayList<Snapshot>();
 		
-		timer.scheduleAtFixedRate(new SnapShotTask(), 10000, 5000);
+		timer.scheduleAtFixedRate(new SnapShotTask(), 5000, 2000);
 		
 	}
 

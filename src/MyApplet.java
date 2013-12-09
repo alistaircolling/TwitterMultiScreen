@@ -31,6 +31,8 @@ public class MyApplet extends PApplet implements ActionListener {
 	private static final float GRAPH_WIDTH = 700;
 	private static final float GRAPH_HEIGHT = 400;
 	private static final int MAX_SNAPSHOTS_TO_SHOW = 100;
+	//how many are we having in the graph?
+	private static final int MAXIMUM_VALUES_TO_TRACK = 5;
 	// the background image
 	PImage bgImg = null;
 	private PFont fontA;
@@ -184,11 +186,12 @@ public class MyApplet extends PApplet implements ActionListener {
 		float xPos = 0;
 
 		float yPos = 0;
-		int maxVal = 0;
+	
 		int counter = 0;// used to track our x progress
+		String keyName;//used for string labels
 		//
 		float incPerSnapShot = GRAPH_WIDTH / MAX_SNAPSHOTS_TO_SHOW;
-
+		float yInc = GRAPH_HEIGHT / maxVal;
 		// if the top value is longer than the maxomim number we can show, move
 		// the bottom up accordingly
 		if (top > MAX_SNAPSHOTS_TO_SHOW)
@@ -197,19 +200,32 @@ public class MyApplet extends PApplet implements ActionListener {
 		// iterate from the bottom value to the top
 		for (int i = bottom; i < top; i++) {
 			pushMatrix();
-			// get the current snapshot
-			Snapshot snap = snapShots.get(i);
-			xPos = counter * incPerSnapShot;
-
-			if (maxVal == 0) {
-				// get the val of the last item in the array
-				maxVal = snap.getArray().get(snap.getArray().size() - 1)
-						.getValue();
-			}
-
-			xPos = i * incPerSnapShot;
-			// move to the correct xpos
+				// get the current snapshot
+				Snapshot snap = snapShots.get(i);
+				xPos = counter * incPerSnapShot;
+				// move to the correct xpos
+				translate(xPos, GRAPH_HEIGHT);
+				fill(100,0,0);
+				ellipse(0, 0, 30, 30);
+				int topVal = snap.getArray().size();
+				if (topVal>MAXIMUM_VALUES_TO_TRACK) topVal = MAXIMUM_VALUES_TO_TRACK; 
+				//iterate through top X values
+				for (int j = 0; j < topVal; j++) {
+					Entry<String, Integer> entry =  snap.getArray().get(j);
+					keyName = entry.getKey();
+					yPos = entry.getValue()*yInc;
+					fill((360/topVal)*j, 50, 100);
+					ellipse(0, 0-yPos, 10, 10);
+					
+					
+					
+				}
+				
+				
+			
+			
 			popMatrix();
+			counter++;
 		}
 		popMatrix();
 	
