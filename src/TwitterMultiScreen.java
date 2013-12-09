@@ -1,10 +1,12 @@
 import java.awt.EventQueue;
 import java.awt.Frame;
-import java.awt.List;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
@@ -178,9 +180,20 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 				System.out.println(tweetId);
 				String content = status.getText();
 				System.out.println(content + "\n");
+				applet.setTweet(returnTime()+":  "+status.getText());
 				addKeywords(status);
-				traceTotals();
+		//		traceTotals();
 
+			}
+			
+			//returns the hms time
+			private String returnTime() {
+				Calendar cal = Calendar.getInstance();
+		    	cal.getTime();
+		    	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		    	System.out.println( sdf.format(cal.getTime()) );
+		    	String retS = sdf.format(cal.getTime());
+				return retS;
 			}
 
 			@Override
@@ -198,7 +211,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		};
 		FilterQuery fq = new FilterQuery();
 
-		String keywords[] = { "xfactor" };
+		String keywords[] = { "xfactor", "cats" };
 
 		fq.track(keywords);
 
@@ -277,8 +290,25 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 			}
 
 		}
-
+		sortMap();
 	}
+
+	private void sortMap() {			
+		Collections.sort(mapList, new Comparator<Map.Entry<String, Integer>>() {
+			  @Override
+			  public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+				if (o1.getValue()>o2.getValue()){
+					return -1;
+				}else if (o1.getValue()<o2.getValue()){
+					return 1;
+				}else{
+					return 0;
+				}
+			  }
+			});
+	}
+	
+	
 
 	private void traceTotals() {
 		System.out.println(" ======== trace totals =========");

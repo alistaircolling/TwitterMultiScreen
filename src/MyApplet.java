@@ -32,6 +32,8 @@ public class MyApplet extends PApplet implements ActionListener {
 	// the background image
 	PImage bgImg = null;
 	private PFont fontA;
+	private int totalTweets = 0;
+	private String lastTweet = "";
 
 	@Override
 	public void setup() {
@@ -51,6 +53,12 @@ public class MyApplet extends PApplet implements ActionListener {
 		// Set the font and its size (in units of pixels)
 		textFont(fontA, 40);
 		text("Realtime Twitter Monitoring", 10, 40);
+		
+		fill(200, 20, 100);
+		// Set the font and its size (in units of pixels)
+		textFont(fontA, 20);
+		text(lastTweet, 10, 70);
+		
 
 	}
 
@@ -60,6 +68,7 @@ public class MyApplet extends PApplet implements ActionListener {
 	}
 
 	public void printList(ArrayList<Entry<String, Integer>> mapList) {
+		totalTweets ++;
 		int startVal = 0;
 		int yPos = 100;
 		int xPos = 10;
@@ -68,13 +77,6 @@ public class MyApplet extends PApplet implements ActionListener {
 		addTitle();
 		//
 		
-		//sort list
-		Collections.sort(mapList, new Comparator<Map.Entry<String, Integer>>() {
-			  @Override
-			  public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-			    return 0;
-			  }
-			});
 		
 
 		for (Entry<String, Integer> entry : mapList) {
@@ -82,6 +84,7 @@ public class MyApplet extends PApplet implements ActionListener {
 				fill(entry.getValue()*50, 70, 100);
 				// Set the font and its size (in units of pixels)
 				fontSize = 4*entry.getValue();
+				if (fontSize>30) fontSize = 30;
 				textFont(fontA, fontSize);
 				text(entry.getKey() + ":" + entry.getValue(), xPos,
 						  yPos +(fontSize*.5f));
@@ -167,6 +170,12 @@ public class MyApplet extends PApplet implements ActionListener {
 			fill(color.getRGB(), 120);
 			ellipse(x, y, size, size);
 		}
+	}
+
+	public void setTweet(String string) {
+		lastTweet = string;
+		// TODO Auto-generated method stub
+		
 	}
 
 }
