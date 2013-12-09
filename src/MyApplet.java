@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,13 +51,12 @@ public class MyApplet extends PApplet implements ActionListener {
 		fill(360, 0, 100);
 		// Set the font and its size (in units of pixels)
 		textFont(fontA, 40);
-		text("Realtime Twitter Monitoring", 10, 40);
-		
+		text("Realtime Twitter Monitoring", 10, 48);
+
 		fill(200, 20, 100);
 		// Set the font and its size (in units of pixels)
 		textFont(fontA, 20);
 		text(lastTweet, 10, 70);
-		
 
 	}
 
@@ -68,36 +66,33 @@ public class MyApplet extends PApplet implements ActionListener {
 	}
 
 	public void printList(ArrayList<Entry<String, Integer>> mapList) {
-		totalTweets ++;
-		int startVal = 0;
+		totalTweets++;
 		int yPos = 100;
 		int xPos = 10;
 		int fontSize = 0;
 		background(0);
 		addTitle();
 		//
-		
-		
 
+		int maxVal = mapList.get(mapList.size() - 1).getValue();
+		float colorDiff = 360 / maxVal;
 		for (Entry<String, Integer> entry : mapList) {
-			if (entry.getValue() > 1) {
-				fill(entry.getValue()*50, 70, 100);
-				// Set the font and its size (in units of pixels)
-				fontSize = 4*entry.getValue();
-				if (fontSize>30) fontSize = 30;
-				textFont(fontA, fontSize);
-				text(entry.getKey() + ":" + entry.getValue(), xPos,
-						  yPos +(fontSize*.5f));
-				// already exists
-				System.out.println(entry.getKey() + ":" + entry.getValue());
-				startVal++;
-				yPos += fontSize;
-				if (yPos>height){
-					xPos +=200;
-					yPos = 100;
-				}
-			} 
 
+			fill(colorDiff * entry.getValue(), 30, 100);
+			// Set the font and its size (in units of pixels)
+			fontSize = 4 * entry.getValue();
+			if (fontSize > 30)
+				fontSize = 30;
+			textFont(fontA, fontSize);
+			text(entry.getKey() + ":" + entry.getValue(), xPos, yPos
+					+ (fontSize * .5f));
+			// already exists
+			// System.out.println(entry.getKey() + ":" + entry.getValue());
+			
+			yPos += fontSize;
+			if (yPos > height) {
+				return;
+			}
 		}
 
 	}
@@ -175,7 +170,7 @@ public class MyApplet extends PApplet implements ActionListener {
 	public void setTweet(String string) {
 		lastTweet = string;
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

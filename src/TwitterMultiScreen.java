@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -37,43 +39,14 @@ import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
 
 public class TwitterMultiScreen extends BaseSwingFrameApp {
-	Minim minim;
-	AudioPlayer song;
-	LoadFromCanvasTask loadFromCanvasTask = new LoadFromCanvasTask();
 
 	Timer timer;
 
 	// ExtraWindow win;
-	// ExtraWindow win;
 
-	// --- music fun
-	EQLevels eq;
-	int lowEQColBuffer = 4;
-	int highEQColBuffer = 4;
-
-	float eqDrawFactor = (float) .06;
-	float lowEQDrawFactor = (float) .02;
-	float highEQDrawFactor = (float) .35;
-
-	int eqFallDelayPos = 0;
-	int eqFallDelayAt = 12;
-	int musicTop = 400;
-
-	float eqInputAdj = (float) .00;
-	int eqLeftOffset = 1;
-	int eqRightOffset = 3;
-
-	float colorEQBrt = (float) 1;
-	float colorEQBackBrt = (float) .1;
-
-	int eqPos[];
-
-	// --- added for matrix
-	int MATRIX_COLS = 40;
-	int MATRIX_ROWS = 25;
-	LEDMatrix matrix;
 	private JFrame frame;
 	private MyApplet applet;
+	ArrayList<Map.Entry<String, Integer>> mapList;
 
 	/**
 	 * CONSTRUCTOR
@@ -119,20 +92,22 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		buttonPanel.add(buttonLoad);
 
 		// store the applet in panel
-		panel.add(applet);
+
 		// store the buttonPanel in panel
-		panel.add(buttonPanel);
+		// panel.add(buttonPanel);
 
 		// store the panel in the frame
 		frame.add(panel);
 		// assign a size for the frame
 		// reading the size from the applet
 		frame.setSize(1024, 868);
+		panel.add(applet);
 
 		// display the frame
 		frame.setVisible(true);
 		createDataStore();
 		setupTwitter();
+		setupTimer();
 	}
 
 	private void setupTwitter() {
@@ -173,26 +148,23 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 				// gets Username
 				String username = status.getUser().getScreenName();
-				System.out.println(username);
+
 				String profileLocation = user.getLocation();
-				System.out.println(profileLocation);
+
 				long tweetId = status.getId();
-				System.out.println(tweetId);
 				String content = status.getText();
-				System.out.println(content + "\n");
-				applet.setTweet(returnTime()+":  "+status.getText());
+				applet.setTweet(returnTime() + ":  " + status.getText());
 				addKeywords(status);
-		//		traceTotals();
+				traceTotals();
 
 			}
-			
-			//returns the hms time
+
+			// returns the hms time
 			private String returnTime() {
 				Calendar cal = Calendar.getInstance();
-		    	cal.getTime();
-		    	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-		    	System.out.println( sdf.format(cal.getTime()) );
-		    	String retS = sdf.format(cal.getTime());
+				cal.getTime();
+				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+				String retS = sdf.format(cal.getTime());
 				return retS;
 			}
 
@@ -220,42 +192,32 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 	}
 
-	private HashMap<String, Integer> map;
-
-	ArrayList<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>();
-
-	private ArrayListMultimap<String, Integer> gMap = ArrayListMultimap
-			.create();
-
 	private void createDataStore() {
-		map = new HashMap<String, Integer>();
+
+		mapList = new ArrayList<Map.Entry<String, Integer>>();
+		
 
 	}
-
-	ArrayList<Map.Entry<String, Integer>> mapList = new ArrayList<Map.Entry<String, Integer>>();
 
 	protected void addKeywords(Status status) {
 		// get tweet
 		String str = status.getText();
-	//	str = "one, two three";
+		// str = "one, two three";
 		// split into an array remove punctuation and make lower case
 		String[] splited = str.replaceAll("[^a-zA-Z ]", "").toLowerCase()
 				.split("\\s+");
 		// vars used in loop
 		String thisStr;
 		int wordTot;
-		
+
 		Entry<String, Integer> newEntry = null;
 		boolean isInList = false;
-		
-		
-		
+
 		for (int i = 0; i < splited.length; i++) {
 			// get word from array
 			thisStr = splited[i];
-			
-		
-		//	thisStr = "hi";
+
+			// thisStr = "hi";
 			// if this is the first word to be added
 			if (mapList.size() == 0) {
 				// this is the syntax that I don't know!
@@ -282,9 +244,9 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 				if (!isInList) {
 					// if we have reached here the value must not be in the
 					// arraylist so add it
-					if (thisStr.length()>3 && !thisStr.equals("xfactor")){
-					mapList.add(new AbstractMap.SimpleEntry<String, Integer>(
-							thisStr, 1));
+					if (thisStr.length() > 3 && !thisStr.equals("xfactor")) {
+						mapList.add(new AbstractMap.SimpleEntry<String, Integer>(
+								thisStr, 1));
 					}
 				}
 			}
@@ -293,64 +255,24 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		sortMap();
 	}
 
-	private void sortMap() {			
+	private void sortMap() {
 		Collections.sort(mapList, new Comparator<Map.Entry<String, Integer>>() {
-			  @Override
-			  public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-				if (o1.getValue()>o2.getValue()){
+			@Override
+			public int compare(Map.Entry<String, Integer> o1,
+					Map.Entry<String, Integer> o2) {
+				if (o1.getValue() > o2.getValue()) {
 					return -1;
-				}else if (o1.getValue()<o2.getValue()){
+				} else if (o1.getValue() < o2.getValue()) {
 					return 1;
-				}else{
+				} else {
 					return 0;
 				}
-			  }
-			});
+			}
+		});
 	}
-	
-	
 
 	private void traceTotals() {
-		System.out.println(" ======== trace totals =========");
 		applet.printList(mapList);
-		for (Entry<String, Integer> entry : mapList) {
-			// already exists
-			System.out.println(entry.getKey() + ":" + entry.getValue());
-
-		}
-		
-
-	}
-
-	void loadDefaultMatrix() {
-		String tmpResult = matrix
-		// .loadMatrixFile("/Users/acolling/Desktop/default.xml");
-				.loadMatrixFile("c:/matrix/default.xml");
-		if (tmpResult.equals("")) {
-			// System.out.println("File Loaded.");
-			return;
-		}
-		System.out.println(tmpResult);
-	}
-
-	void matrixSetup() {
-		matrix = new LEDMatrix(MATRIX_COLS, MATRIX_ROWS, 24, 24, 1);
-		loadDefaultMatrix();
-
-		// -- TO CONNECT --->>>
-		matrix.connectToController();
-
-		matrix.refresh();
-		matrix.emulatorDelay = 20;
-		matrix.ui.setLocation(this.getLocation().x + this.getWidth(),
-				this.getLocation().y);
-
-		matrix.ui.setVisible(true);
-
-		eqPos = new int[200];
-
-		setupTimer();
-
 	}
 
 	void setupExtraWindow() {
@@ -358,14 +280,6 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		// win = new DropsWindow(proc, "Matrix Setup", 500, 300);
 		// win.setVisible(false);
 
-	}
-
-	// --- overrides the set process event to include loading minim from the
-	// base
-	public void setProc(PApplet theproc) {
-		super.setProc(theproc);
-		minim = ((ProcessingAppLauncherMinim) proc).minim;
-		eq = new EQLevels(minim, 20);
 	}
 
 	private void launchFS() {
@@ -376,18 +290,6 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		System.out.println("launch fs");
 	}
 
-	void playDemoSong() {
-		if (minim == null) {
-			System.out.println("NULL Minim");
-			return;
-		}
-		eq.loadSong(txtSongName.getText());
-		eq.song.play();
-	}
-
-	private JPanel contentPane;
-	private JTextField txtSongName;
-
 	/**
 	 * Launch the application.
 	 */
@@ -395,12 +297,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					// AppSoundDemoSwing frame = new AppSoundDemoSwing();
-					// frame.setVisible(true);
 
-					// ProcessingAppLauncher procLaunch = new
-					// ProcessingAppLauncher();
-					// NOTE: Using Minim version
 					ProcessingAppLauncherMinim procLaunch = new ProcessingAppLauncherMinim();
 					procLaunch.launch("TwitterMultiScreen");
 				} catch (Exception e) {
@@ -418,18 +315,32 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		}
 	}
 
+	Runnable helloRunnable = new Runnable() {
+		public void run() {
+			System.out.println("Hello world");
+		}
+
+	};
+
+	// executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
+
 	void setupTimer() {
+		// loadFromCanvasTask = new LoadFromCanvasTask();
 		timer = new Timer();
-		timer.schedule(loadFromCanvasTask, 0, // initial delay
-				100);
+		timer.scheduleAtFixedRate(new SnapShotTask(), 10000, 5000);
 	}
 
-	class LoadFromCanvasTask extends TimerTask {
-		public void run() {
-			while (true) {
-				// run timer task here
-			}
+	public void snapshotData() {
+		System.out.println("snapshot!");
+		Calendar cal = Calendar.getInstance();
+		cal.getTime();
+		snapShot = new Snapshot(cal, mapList);
+	}
 
+	class SnapShotTask extends TimerTask {
+		public void run() {
+			snapshotData();
 		}
+
 	}
 }
