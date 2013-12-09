@@ -174,29 +174,28 @@ public class MyApplet extends PApplet implements ActionListener {
 			float yPos = 0;
 			int maxVal = 0;
 //			
-			
+			float incPerSnapShot = GRAPH_WIDTH/MAX_SNAPSHOTS_TO_SHOW;
 			popMatrix();
-			/*
-
-			float incPerSnapShot = GRAPH_WIDTH/MAX_SNAPSHOTS_TO_SHOW;*/
+			
+/*
 		//	Snapshot snap;
-//			if (top>MAX_SNAPSHOTS_TO_SHOW) bottom = top - MAX_SNAPSHOTS_TO_SHOW; 
-//			for (int i = bottom; i < top; i++) {
-//				
-//				snap = snapShots.get(i);
-//				
-//				if (maxVal==0){
-//					//get the val of the last item in the array
-//					maxVal = snap.getArray().get(snap.getArray().size()-1).getValue();
-//				}
-//				
-//				xPos = i*incPerSnapShot;
-//				//move to the correct xpos
-//				
-//			}
-//			
-			//
-	//	popMatrix();
+			if (top>MAX_SNAPSHOTS_TO_SHOW) bottom = top - MAX_SNAPSHOTS_TO_SHOW; 
+			for (int i = bottom; i < top; i++) {
+				
+				snap = snapShots.get(i);
+				
+				if (maxVal==0){
+					//get the val of the last item in the array
+					maxVal = snap.getArray().get(snap.getArray().size()-1).getValue();
+				}
+				
+				xPos = i*incPerSnapShot;
+				//move to the correct xpos
+				
+			}
+			
+			
+		popMatrix();*/
 		
 	
 		

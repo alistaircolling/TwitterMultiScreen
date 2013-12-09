@@ -52,6 +52,8 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	// used to track values comparatively over time i.e. the rate
 	private ArrayList<Entry<String, Integer>> snapShotList;
 
+	private ArrayList<Entry<String, Integer>> lastMapList;
+
 	/**
 	 * CONSTRUCTOR
 	 */
@@ -199,6 +201,8 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	private void createDataStore() {
 
 		mapList = new ArrayList<Map.Entry<String, Integer>>();
+		//used to track difference each snapshot
+		lastMapList = new ArrayList<Map.Entry<String, Integer>>();
 		snapShotList = new ArrayList<Map.Entry<String, Integer>>();
 
 	}
@@ -338,7 +342,8 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		// loadFromCanvasTask = new LoadFromCanvasTask();
 		timer = new Timer();
 		snapShots = new ArrayList<Snapshot>();
-		timer.scheduleAtFixedRate(new SnapShotTask(), 2000, 1000);
+		
+		timer.scheduleAtFixedRate(new SnapShotTask(), 10000, 5000);
 		
 	}
 
@@ -348,7 +353,12 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		Date time = cal.getTime();
 		int targInd = snapShots.size()-1;
 		if (targInd==-1) targInd = 0;
-		Snapshot snapShot = new Snapshot(time, mapList, targInd);
+		
+		//create a temporary AL to calculate the difference since last time
+		ArrayList<Map.Entry<String, Integer>> diffList = getDiffList(lastMapList, mapList);
+		lastMapList = new ArrayList<Map.Entry<String,Integer>>(diffList);
+		
+		Snapshot snapShot = new Snapshot(time, diffList, targInd);
 		snapShots.add(snapShot);
 
 		// get the highest val in the array
@@ -360,6 +370,42 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		System.out.println("snapshot! total now:" + snapShots.size());
 		applet.setNewSnapShotList(snapShots, maxVal);
 
+	}
+	
+	
+
+	private ArrayList<Entry<String, Integer>> getDiffList(
+			ArrayList<Entry<String, Integer>> lastMapList2,
+			ArrayList<Entry<String, Integer>> mapList2) {
+		ArrayList<Entry<String, Integer>> retList = new ArrayList<Map.Entry<String,Integer>>();
+		//go through every entry in the LATEST maplist
+		int i = 0;
+		for (Entry<String, Integer> entry : mapList2) {
+			String keyName = entry.getKey();
+			int val = entry.getValue();
+			int lastVal = getValueForKey(keyName, lastMapList2);
+			int diff = val-lastVal;
+			if (i<5){
+			System.out.println(keyName+" this:"+val+" last:"+lastVal+" dif:"+diff);
+			}
+			i++;
+			//add the new item to the return list
+			retList.add(new AbstractMap.SimpleEntry<String, Integer>(
+					keyName, diff));
+		}
+		return retList;
+	}
+
+	private int getValueForKey(String keyName,
+			ArrayList<Entry<String, Integer>> mapList2) {
+		
+		for (Entry<String, Integer> entry : mapList2) {
+			if (entry.getKey().equals(keyName)){
+				return entry.getValue();
+			}
+		}
+		 
+		return 0;
 	}
 
 	class SnapShotTask extends TimerTask {
