@@ -71,12 +71,13 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	int MATRIX_ROWS = 25;
 	LEDMatrix matrix;
 	private JFrame frame;
+	private MyApplet applet;
 
 	/**
 	 * CONSTRUCTOR
 	 */
 	public TwitterMultiScreen() {
-		final JFrame frame = new JFrame("PApplet in Java Application");
+		final JFrame frame = new JFrame("Brand Live Realtime Tracking");
 		// make sure to shut down the application, when the frame is closed
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -87,7 +88,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		JPanel buttonPanel = new JPanel();
 
 		// create an instance of your processing applet
-		final MyApplet applet = new MyApplet();
+		applet = new MyApplet();
 
 		// start the applet
 		applet.init();
@@ -124,7 +125,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		frame.add(panel);
 		// assign a size for the frame
 		// reading the size from the applet
-		frame.setSize(1200, 800);
+		frame.setSize(1024, 868);
 
 		// display the frame
 		frame.setVisible(true);
@@ -197,7 +198,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		};
 		FilterQuery fq = new FilterQuery();
 
-		String keywords[] = { "cat" };
+		String keywords[] = { "xfactor" };
 
 		fq.track(keywords);
 
@@ -230,11 +231,17 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		// vars used in loop
 		String thisStr;
 		int wordTot;
+		
 		Entry<String, Integer> newEntry = null;
 		boolean isInList = false;
+		
+		
+		
 		for (int i = 0; i < splited.length; i++) {
 			// get word from array
-			thisStr = splited[i].toLowerCase();
+			thisStr = splited[i];
+			
+		
 		//	thisStr = "hi";
 			// if this is the first word to be added
 			if (mapList.size() == 0) {
@@ -262,8 +269,10 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 				if (!isInList) {
 					// if we have reached here the value must not be in the
 					// arraylist so add it
+					if (thisStr.length()>3 && !thisStr.equals("xfactor")){
 					mapList.add(new AbstractMap.SimpleEntry<String, Integer>(
 							thisStr, 1));
+					}
 				}
 			}
 
@@ -273,12 +282,13 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 	private void traceTotals() {
 		System.out.println(" ======== trace totals =========");
-
+		applet.printList(mapList);
 		for (Entry<String, Integer> entry : mapList) {
 			// already exists
 			System.out.println(entry.getKey() + ":" + entry.getValue());
 
 		}
+		
 
 	}
 
