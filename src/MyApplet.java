@@ -27,7 +27,7 @@ import processing.core.*;
 public class MyApplet extends PApplet implements ActionListener {
 
 	// list of all balls
-	
+
 	private static final float GRAPH_WIDTH = 700;
 	private static final float GRAPH_HEIGHT = 400;
 	private static final int MAX_SNAPSHOTS_TO_SHOW = 100;
@@ -46,7 +46,7 @@ public class MyApplet extends PApplet implements ActionListener {
 		fontA = loadFont("Monospaced-48.vlw");
 		colorMode(HSB, 360, 1, 1);
 		size(1024, 768);
-	
+
 		// creates a first ball
 		// createNewBall();
 		addTitle();
@@ -62,31 +62,44 @@ public class MyApplet extends PApplet implements ActionListener {
 		fill(200, 20, 100);
 		// Set the font and its size (in units of pixels)
 		textFont(fontA, 20);
-		text(lastTweet, 10, 70);
+		String noFormat = lastTweet.replace("\n", "").replace("\r", "");
+		text(noFormat, 10, 70);
+		textFont(fontA, 20);
+		fill(200, 0, 100);
+		text("TOTALS", 10, 90);
 
 	}
 
 	@Override
 	public void draw() {
 		
+
 	}
 	
-
-	
-	public void printList(ArrayList<Entry<String, Integer>> mapList) {
+	public void myDraw() {
+		background(0);
+		drawGraph();
+		addTitle();
+		if (mapList != null) {
+			printList();
+		}
 		
+	}
+	
+	
+
+	public void printList() {
+
 		totalTweets++;
 		int yPos = 100;
 		int xPos = 10;
 		int fontSize = 0;
-		background(0);
-		drawGraph();
-		addTitle();
+
 		//
 
-		int maxVal = mapList.get(mapList.size() - 1).getValue();
+		int maxVal = mapList.get(0).getValue();
 		float colorDiff = 360 / maxVal;
-		
+
 		for (Entry<String, Integer> entry : mapList) {
 
 			fill(colorDiff * entry.getValue(), 30, 100);
@@ -98,8 +111,8 @@ public class MyApplet extends PApplet implements ActionListener {
 			text(entry.getKey() + ":" + entry.getValue(), xPos, yPos
 					+ (fontSize * .5f));
 			// already exists
-			 //System.out.println(entry.getKey() + ":" + entry.getValue());
-			
+			// System.out.println(entry.getKey() + ":" + entry.getValue());
+
 			yPos += fontSize;
 			if (yPos > height) {
 				return;
@@ -116,7 +129,7 @@ public class MyApplet extends PApplet implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
 		println("action performed");
 		if (evt.getActionCommand().equals("create ball")) {
-			//put method here
+			// put method here
 		} else {
 			println("actionPerformed(): can't handle " + evt.getActionCommand());
 		}
@@ -133,72 +146,81 @@ public class MyApplet extends PApplet implements ActionListener {
 	/*
 	 * creates a new Ball instance and adds it to ballList
 	 */
-	
-
 
 	public void setTweet(String string) {
 		lastTweet = string;
 		// TODO Auto-generated method stub
 
 	}
-	
-	public void setNewSnapShotList(ArrayList<Snapshot> theSnapShots, int theMaxVal) {
+
+	public void setNewSnapShotList(ArrayList<Snapshot> theSnapShots,
+			int theMaxVal) {
 		snapShots = theSnapShots;
 		maxVal = theMaxVal;
 	}
 
-	public void drawGraph(){
-		//move in from the side etc
+	public void drawGraph() {
+		// move in from the side etc
 		pushMatrix();
-			translate(200, 250);
-			fill(200, 0, 100);
-		//	rect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
-			
-			
-			//draw axis
-			stroke(255);
-			line(0, 0, 0, GRAPH_HEIGHT);
-			line(0, GRAPH_HEIGHT, GRAPH_WIDTH, GRAPH_HEIGHT);
-			int top = 0;
-			if (snapShots!=null){
-				if (snapShots.size()>0){
-					top = snapShots.size()-1;
-				}
+		translate(200, 250);
+		fill(200, 0, 100);
+		// rect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
+
+		// draw axis
+		stroke(255);
+		line(0, 0, 0, GRAPH_HEIGHT);
+		line(0, GRAPH_HEIGHT, GRAPH_WIDTH, GRAPH_HEIGHT);
+		int top = 0;
+		if (snapShots != null) {
+			if (snapShots.size() > 0) {
+				top = snapShots.size() - 1;
 			}
-			
-//			// draw dots - make sure we only get the last XX snapshots 
-		//	int top = snapShots.size()-1;  //get the highest value
-			//if (top<0) return;
-			int bottom = 0;
-			float xPos = 0;
-			float yPos = 0;
-			int maxVal = 0;
-//			
-			float incPerSnapShot = GRAPH_WIDTH/MAX_SNAPSHOTS_TO_SHOW;
+		}
+
+		// // draw dots - make sure we only get the last XX snapshots
+		// int top = snapShots.size()-1; //get the highest value
+		// if (top<0) return;
+		int bottom = 0;
+		float xPos = 0;
+
+		float yPos = 0;
+		int maxVal = 0;
+		int counter = 0;// used to track our x progress
+		//
+		float incPerSnapShot = GRAPH_WIDTH / MAX_SNAPSHOTS_TO_SHOW;
+
+		// if the top value is longer than the maxomim number we can show, move
+		// the bottom up accordingly
+		if (top > MAX_SNAPSHOTS_TO_SHOW)
+			bottom = top - MAX_SNAPSHOTS_TO_SHOW;
+
+		// iterate from the bottom value to the top
+		for (int i = bottom; i < top; i++) {
+			pushMatrix();
+			// get the current snapshot
+			Snapshot snap = snapShots.get(i);
+			xPos = counter * incPerSnapShot;
+
+			if (maxVal == 0) {
+				// get the val of the last item in the array
+				maxVal = snap.getArray().get(snap.getArray().size() - 1)
+						.getValue();
+			}
+
+			xPos = i * incPerSnapShot;
+			// move to the correct xpos
 			popMatrix();
-			
-/*
-		//	Snapshot snap;
-			if (top>MAX_SNAPSHOTS_TO_SHOW) bottom = top - MAX_SNAPSHOTS_TO_SHOW; 
-			for (int i = bottom; i < top; i++) {
-				
-				snap = snapShots.get(i);
-				
-				if (maxVal==0){
-					//get the val of the last item in the array
-					maxVal = snap.getArray().get(snap.getArray().size()-1).getValue();
-				}
-				
-				xPos = i*incPerSnapShot;
-				//move to the correct xpos
-				
-			}
-			
-			
-		popMatrix();*/
-		
+		}
+		popMatrix();
 	
-		
+
 	}
+
+	public void setList(ArrayList<Entry<String, Integer>> mapList2) {
+		mapList = mapList2;
+
+	}
+
+	
 
 }

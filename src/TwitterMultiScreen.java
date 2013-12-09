@@ -281,7 +281,8 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	}
 
 	private void traceTotals() {
-		applet.printList(mapList);
+		applet.setList(mapList);
+		applet.myDraw();
 	}
 
 	void setupExtraWindow() {
@@ -372,7 +373,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 
 	}
 	
-	
+	//returns an arraylist that has the difference in values for each map entry
 
 	private ArrayList<Entry<String, Integer>> getDiffList(
 			ArrayList<Entry<String, Integer>> lastMapList2,
