@@ -30,7 +30,7 @@ public class MyApplet extends PApplet implements ActionListener {
 
 	private static final float GRAPH_WIDTH = 700;
 	private static final float GRAPH_HEIGHT = 400;
-	private static final int MAX_SNAPSHOTS_TO_SHOW = 100;
+	private static final int MAX_SNAPSHOTS_TO_SHOW = 300;
 	//how many are we having in the graph?
 	private static final int MAXIMUM_VALUES_TO_TRACK = 5;
 	// the background image
@@ -184,14 +184,16 @@ public class MyApplet extends PApplet implements ActionListener {
 		// if (top<0) return;
 		int bottom = 0;
 		float xPos = 0;
-
 		float yPos = 0;
-	
+		float lastX = 0;
+		float lastY= 0;
+		float diffX = 0; //used to store how far back left to start drawingt he line
 		int counter = 0;// used to track our x progress
 		String keyName;//used for string labels
 		//
 		float incPerSnapShot = GRAPH_WIDTH / MAX_SNAPSHOTS_TO_SHOW;
 		float yInc = GRAPH_HEIGHT / maxVal;
+		
 		// if the top value is longer than the maxomim number we can show, move
 		// the bottom up accordingly
 		if (top > MAX_SNAPSHOTS_TO_SHOW)
@@ -203,10 +205,11 @@ public class MyApplet extends PApplet implements ActionListener {
 				// get the current snapshot
 				Snapshot snap = snapShots.get(i);
 				xPos = counter * incPerSnapShot;
+				diffX = xPos - lastX;
 				// move to the correct xpos
 				translate(xPos, GRAPH_HEIGHT);
 				fill(100,0,0);
-				ellipse(0, 0, 30, 30);
+				//ellipse(0, 0, 30, 30);
 				int topVal = snap.getArray().size();
 				if (topVal>MAXIMUM_VALUES_TO_TRACK) topVal = MAXIMUM_VALUES_TO_TRACK; 
 				//iterate through top X values
@@ -214,12 +217,24 @@ public class MyApplet extends PApplet implements ActionListener {
 					Entry<String, Integer> entry =  snap.getArray().get(j);
 					keyName = entry.getKey();
 					yPos = entry.getValue()*yInc;
-					fill((360/topVal)*j, 50, 100);
-					ellipse(0, 0-yPos, 10, 10);
+					noStroke();
+					fill((360/maxVal)*entry.getValue(), 100, 100);
+					ellipse(0, 0-yPos, 4, 4);
 					
-					
-					
+					//write text on the last one
+					if (i>top-2){
+						//write the name
+						textFont(fontA, 16);
+						int textX = 10;
+						//flip left and right of dots
+						if (j%2==0){
+							//textX = (int) (0-(textWidth(keyName)+10));
+						}
+						text(keyName, textX, 0-yPos);
+					}
+	
 				}
+				lastX = xPos;
 				
 				
 			

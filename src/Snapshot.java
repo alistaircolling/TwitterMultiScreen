@@ -14,11 +14,13 @@ public class Snapshot {
 	private ArrayList<Entry<String, Integer>> array;
 	//the index in the arraylist (in case we need to know here)
 	private int index;
-
+	public int ranCol;
+	
 	public Snapshot(Date theTime, ArrayList<Entry<String, Integer>> mapList, int theInd) {
 		setTime(theTime);
 		setArray(mapList);
 		setIndex(theInd);
+		
 	}
 
 	public Date getTime() {

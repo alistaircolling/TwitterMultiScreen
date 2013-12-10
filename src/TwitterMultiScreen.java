@@ -151,7 +151,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 			@Override
 			public void onStatus(Status status) {
 				User user = status.getUser();
-			//	System.out.println("status");
+				// System.out.println("status");
 				// gets Username
 				String username = status.getUser().getScreenName();
 
@@ -201,7 +201,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	private void createDataStore() {
 
 		mapList = new ArrayList<Map.Entry<String, Integer>>();
-		//used to track difference each snapshot
+		// used to track difference each snapshot
 		lastMapList = new ArrayList<Map.Entry<String, Integer>>();
 		snapShotList = new ArrayList<Map.Entry<String, Integer>>();
 
@@ -343,69 +343,73 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 		// loadFromCanvasTask = new LoadFromCanvasTask();
 		timer = new Timer();
 		snapShots = new ArrayList<Snapshot>();
-		
+
 		timer.scheduleAtFixedRate(new SnapShotTask(), 5000, 2000);
-		
+
 	}
 
 	public void snapshotData() {
 
 		Calendar cal = Calendar.getInstance();
 		Date time = cal.getTime();
-		int targInd = snapShots.size()-1;
-		if (targInd==-1) targInd = 0;
-		
-		//create a temporary AL to calculate the difference since last time
-		ArrayList<Map.Entry<String, Integer>> diffList = getDiffList(lastMapList, mapList);
-		lastMapList = new ArrayList<Map.Entry<String,Integer>>(diffList);
-		
+		int targInd = snapShots.size() - 1;
+		if (targInd == -1)
+			targInd = 0;
+
+		// create a temporary AL to calculate the difference since last time
+		ArrayList<Map.Entry<String, Integer>> diffList = getDiffList(
+				lastMapList, mapList);
+		lastMapList = new ArrayList<Map.Entry<String, Integer>>(diffList);
+
 		Snapshot snapShot = new Snapshot(time, diffList, targInd);
 		snapShots.add(snapShot);
 
 		// get the highest val in the array
-		int newMaxVal = snapShot.getArray().get(0)
-				.getValue();
-		if (newMaxVal > maxVal)
-			maxVal = newMaxVal;
+		if (snapShot != null) {
+			int newMaxVal = snapShot.getArray().get(0).getValue();
+			if (newMaxVal > maxVal)
+				maxVal = newMaxVal;
 
-		System.out.println("snapshot! total now:" + snapShots.size());
-		applet.setNewSnapShotList(snapShots, maxVal);
+			System.out.println("snapshot! total now:" + snapShots.size());
+			applet.setNewSnapShotList(snapShots, maxVal);
+		}
 
 	}
-	
-	//returns an arraylist that has the difference in values for each map entry
+
+	// returns an arraylist that has the difference in values for each map entry
 
 	private ArrayList<Entry<String, Integer>> getDiffList(
 			ArrayList<Entry<String, Integer>> lastMapList2,
 			ArrayList<Entry<String, Integer>> mapList2) {
-		ArrayList<Entry<String, Integer>> retList = new ArrayList<Map.Entry<String,Integer>>();
-		//go through every entry in the LATEST maplist
+		ArrayList<Entry<String, Integer>> retList = new ArrayList<Map.Entry<String, Integer>>();
+		// go through every entry in the LATEST maplist
 		int i = 0;
 		for (Entry<String, Integer> entry : mapList2) {
 			String keyName = entry.getKey();
 			int val = entry.getValue();
 			int lastVal = getValueForKey(keyName, lastMapList2);
-			int diff = val-lastVal;
-			if (i<5){
-			System.out.println(keyName+" this:"+val+" last:"+lastVal+" dif:"+diff);
+			int diff = val - lastVal;
+			if (i < 5) {
+				System.out.println(keyName + " this:" + val + " last:"
+						+ lastVal + " dif:" + diff);
 			}
 			i++;
-			//add the new item to the return list
-			retList.add(new AbstractMap.SimpleEntry<String, Integer>(
-					keyName, diff));
+			// add the new item to the return list
+			retList.add(new AbstractMap.SimpleEntry<String, Integer>(keyName,
+					diff));
 		}
 		return retList;
 	}
 
 	private int getValueForKey(String keyName,
 			ArrayList<Entry<String, Integer>> mapList2) {
-		
+
 		for (Entry<String, Integer> entry : mapList2) {
-			if (entry.getKey().equals(keyName)){
+			if (entry.getKey().equals(keyName)) {
 				return entry.getValue();
 			}
 		}
-		 
+
 		return 0;
 	}
 
