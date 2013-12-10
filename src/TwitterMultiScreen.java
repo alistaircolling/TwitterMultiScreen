@@ -253,7 +253,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 				if (!isInList) {
 					// if we have reached here the value must not be in the
 					// arraylist so add it
-					if (thisStr.length() > 3 && !thisStr.equals("xfactor")) {
+					if (thisStr.length() > 3 && !thisStr.equals("xfactor") && !thisStr.equals("cats")) {
 						mapList.add(new AbstractMap.SimpleEntry<String, Integer>(
 								thisStr, 1));
 					}
