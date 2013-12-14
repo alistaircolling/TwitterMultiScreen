@@ -267,6 +267,7 @@ public class TwitterMultiScreen extends BaseSwingFrameApp {
 	private void sortMap() {
 		Collections.sort(mapList, new Comparator<Map.Entry<String, Integer>>() {
 			@Override
+			
 			public int compare(Map.Entry<String, Integer> o1,
 					Map.Entry<String, Integer> o2) {
 				if (o1.getValue() > o2.getValue()) {

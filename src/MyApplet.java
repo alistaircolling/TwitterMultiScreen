@@ -1,14 +1,16 @@
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map;
 import java.util.Map.Entry;
 
-import processing.core.*;
+import processing.core.PApplet;
+import processing.core.PFont;
+import processing.core.PImage;
+import toxi.color.TColor;
+import controlP5.ControlP5;
+import controlP5.Slider;
+import controlP5.Textlabel;
 
 /**
  * A simple Processing Demo Applet
@@ -33,6 +35,7 @@ public class MyApplet extends PApplet implements ActionListener {
 	private static final int MAX_SNAPSHOTS_TO_SHOW = 300;
 	//how many are we having in the graph?
 	private static final int MAXIMUM_VALUES_TO_TRACK = 5;
+	private static final int TOTAL_SLIDERS = 5;
 	// the background image
 	PImage bgImg = null;
 	private PFont fontA;
@@ -41,9 +44,15 @@ public class MyApplet extends PApplet implements ActionListener {
 	private ArrayList<Snapshot> snapShots;
 	private ArrayList<Entry<String, Integer>> mapList;
 	private int maxVal;
+	private ControlP5 cp5;
+	private TColor[] colors;
+	private Object myTextlabelA;
+	private Textlabel myT;
+	private Slider slider1;
 
 	@Override
 	public void setup() {
+		setupColors();
 		background(0);
 		fontA = loadFont("Monospaced-48.vlw");
 		colorMode(HSB, 360, 1, 1);
@@ -52,6 +61,52 @@ public class MyApplet extends PApplet implements ActionListener {
 		// creates a first ball
 		// createNewBall();
 		addTitle();
+		setupUI();
+	}
+
+	private void setupColors() {
+		colors = new TColor[7];
+		
+		colors[0] = TColor.newHex("595959");
+		colors[1] = TColor.newHex("bababa");
+		colors[2] = TColor.newHex("A5F4FA");
+		colors[3] = TColor.newHex("B7FAB4");
+		colors[4] = TColor.newHex("F6FFA8");
+		colors[5] = TColor.newHex("FFDB66");
+		colors[6] = TColor.newHex("FF87EF");
+		
+		
+	}
+
+	private void setupUI() {
+		cp5 = new ControlP5(this);
+			myT = cp5.addTextlabel("label","label", 20,20);
+			myT.setFont(3);
+			
+			myT.setSize(300, 300);
+			
+			setupSliders();
+			  
+			  
+			     
+			
+			  
+			  // repo
+//		  myTextlabelA = cp5.addTextlabel(
+//		                    .setText("A single ControlP5 textlabel, in yellow.")
+//		                    .setPosition(100,50)
+//		                    .setColorValue(0xffffff00)
+//		                    .setFont(createFont("Georgia",20))
+//		                    ;
+
+		
+		
+	}
+
+	private void setupSliders() {
+	//	slider1 = cp5.addSlider("slider1", 0, arg2bnm,)
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void addTitle() {
@@ -74,12 +129,13 @@ public class MyApplet extends PApplet implements ActionListener {
 
 	@Override
 	public void draw() {
-		
+	
 
 	}
 	
 	public void myDraw() {
 		background(0);
+		
 		drawGraph();
 		addTitle();
 		if (mapList != null) {

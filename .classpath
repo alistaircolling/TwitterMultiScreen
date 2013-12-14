@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="lib/twitter4j-stream-3.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/jdiff.jar"/>
 	<classpathentry kind="lib" path="lib/guava-15.0.jar"/>
+	<classpathentry kind="lib" path="lib/controlP5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
