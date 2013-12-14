@@ -41,9 +41,7 @@ public class MyExtraWindow extends ExtraWindow {
 
 
 	}
-	boolean sketchFullScreen() {
-		  return true;
-		}
+	
 
 	private void setupVectors() {
 
